@@ -1,0 +1,37 @@
+name: Build Mugetsu x86-64-v2
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 180
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        shell: pwsh
+        run: |
+          rustup toolchain install 1.99.0 --profile minimal --no-self-update
+          rustup default 1.99.0
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      - name: Build Ruffle
+        shell: pwsh
+        run: |
+          .\scripts\build-ruffle.ps1 -NoPgo
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mugetsu-x86-64-v2
+          path: out/ruffle/Mugetsu.exe
