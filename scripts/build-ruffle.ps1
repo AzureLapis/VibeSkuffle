@@ -32,6 +32,7 @@ $script = Get-Content -Raw (Join-Path $source 'build-windows.ps1')
 $anchor = "Run git @('-C', `$ruffle, 'apply', '--whitespace=nowarn', (Join-Path `$root 'patches\ruffle.patch'))"
 if (-not $script.Contains($anchor)) { throw "build-windows.ps1 changed; can't find where to add skua.patch" }
 $script = $script.Replace($anchor, $anchor + "`r`nRun git @('-C', `$ruffle, 'apply', '--whitespace=nowarn', (Join-Path `$root 'patches\skua.patch'))")
+$script = $script.Replace("'-Ctarget-cpu=x86-64-v3'", "'-Ctarget-cpu=x86-64-v2'")
 $patched = Join-Path $source 'build-skua.ps1'
 Set-Content -Path $patched -Value $script -Encoding UTF8
 
